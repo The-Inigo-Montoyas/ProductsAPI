@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 const express = require('express');
 const { Client } = require('pg');
 
@@ -33,37 +34,41 @@ app.get('/product/:params', (req, res) => {
     .catch((err) => res.send(err));
 });
 
-app.get('/styles/:params', (req, res, next) => {
+app.get('/styles/:params', (req, res) => {
   const { params } = req.params;
   client.query('SELECT id AS style_id, name, sale_price, original_price, default_style FROM styles WHERE product_id = ($1)', [params])
     .then((results) => {
-      const styleObj = {};
-      styleObj.product_id = params;
-      styleObj.results = results.rows;
-      for (let i = 0; i < results.rows.length; i += 1) {
-        client.query('SELECT id, quantity, size FROM skus WHERE style_id = ($1)', [results.rows[i].style_id])
-          // eslint-disable-next-line no-loop-func
+      const promiseArray = [];
+      results.rows.map((style) => {
+        const queryStr = `SELECT id, quantity, size FROM skus WHERE style_id = ${style.style_id};
+                           SELECT thumbnail_url, url FROM photos WHERE style_id = ${style.style_id}`;
+        const promise = client.query(queryStr)
           .then((data) => {
             const skuObj = {};
-            for (let j = 0; j < data.rows.length; j += 1) {
+            for (let j = 0; j < data[0].rows.length; j += 1) {
               // eslint-disable-next-line prefer-destructuring
-              const id = data.rows[j].id;
+              const id = data[0].rows[j].id;
               const skuInfo = {};
-              skuInfo["size"] = data.rows[j].size;
-              skuInfo["quantity"] = data.rows[j].quantity;
+              skuInfo.size = data[0].rows[j].size;
+              skuInfo.quantity = data[0].rows[j].quantity;
               skuObj[id] = skuInfo;
             }
-            // eslint-disable-next-line no-param-reassign
-            results.rows[i].skus = skuObj;
-            // console.log(results.rows[i]);
-            console.log(styleObj);
-            res.send(styleObj);
+            style.photos = data[1].rows;
+            style.skus = skuObj;
+            return style;
           })
-          .catch((err) => res.send(err));
-      }
-      // res.send(styleObj);
+          .catch((err) => console.log(err));
+        promiseArray.push(promise);
+      });
+      return Promise.all(promiseArray);
     })
-    .catch((err) => res.send(err));
+    .then((results) => {
+      const styleObj = {};
+      styleObj.product_id = params;
+      styleObj.results = results;
+      res.send(styleObj);
+    })
+    .catch((err) => console.log(err));
 });
 
 app.get('/', (req, res) => {
