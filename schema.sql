@@ -59,3 +59,15 @@ CREATE TABLE related (
     FOREIGN KEY(current_product_id)
       REFERENCES product(id)
 );
+
+CREATE TABLE photos (
+  id SERIAL,
+  style_id INT NOT NULL,
+  url VARCHAR(255),
+  thumbnail_url VARCHAR(255),
+  PRIMARY KEY(id),
+  CONSTRAINT fk_styles
+    FOREIGN KEY(style_id)
+      REFERENCES styles(id)
+);
+
