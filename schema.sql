@@ -57,6 +57,7 @@ CREATE TABLE related (
   PRIMARY KEY(id),
   CONSTRAINT fk_product
     FOREIGN KEY(current_product_id)
+    FOREIGN KEY(related_product_id)
       REFERENCES product(id)
 );
 
