@@ -1,15 +1,16 @@
 /* eslint-disable no-param-reassign */
 const express = require('express');
-const { Client } = require('pg');
+const { Pool } = require('pg');
 
-const client = new Client({
-  user: '',
-  host: 'localhost',
-  database: 'sdc',
+const client = new Pool({
+  user: 'postgres',
+  host: '3.14.87.25',
+  database: 'postgres',
+  password: 'Sleepy0wlc@fe1.',
   port: 5432,
 });
 
-client.connect();
+client.query('SELECT NOW()');
 
 const app = express();
 const port = 8000;
