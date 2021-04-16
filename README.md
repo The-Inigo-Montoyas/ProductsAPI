@@ -7,12 +7,14 @@ I was responsible for the reviews section of this platform, in which users have 
 
 # Technologies Utilized
 
-PostgreSQL
-AWS
-Docker
-Nginx
-Loader.io
-k6
+<ul>
+  <li>PostgreSQL </li>
+  <li>AWS </li>
+  <li>Docker </li>
+  <li>Nginx </li>
+  <li>Loader.io</li>
+  <li>k6 </li>
+</ul>
 
 # Schema Design
 
