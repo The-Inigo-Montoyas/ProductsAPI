@@ -21,10 +21,10 @@ After horizontal scaling and Nginx config customizations, I was able to achieve 
 <br>
 The first endpoint that I worked on was for the main product features. This was not a complex query and thus performs much quicker with a latency of just about 16ms
 <br>
-<img src="./assets/products_endpoint.png">
+<img src="./assets/products_endpoint.png" width="800">
 <br>
 <br>
 <br>
 The second endpoint was for all related styles for a particular product. The endpoint queried many different tables and had a much more complex format, resulting in a higher latency in comparison.
 <br>
-<img src="./assets/styles_endpoint.png">
+<img src="./assets/styles_endpoint.png" width="900">
